@@ -2,10 +2,12 @@
 # SPDX-FileCopyrightText: 2024 Nemanja
 # SPDX-FileCopyrightText: 2024 beck-thompson
 # SPDX-FileCopyrightText: 2024 deltanedas
+# SPDX-FileCopyrightText: 2025 Avalon
 # SPDX-FileCopyrightText: 2025 Nim
 # SPDX-FileCopyrightText: 2025 Whatstone
 # SPDX-FileCopyrightText: 2025 dustylens
 # SPDX-FileCopyrightText: 2025 tonotom
+# SPDX-FileCopyrightText: 2025 tonotom1
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -271,6 +273,7 @@
       - id: JetpackBlack
     - id: MysterySpaceBladeBox # Frontier
     - id: CrossbowModernHand # Frontier
+    - id: NFWeaponHoloflareGun # Frontier
 
 - type: entityTable
   id: SalvageEquipmentLegendary
@@ -286,6 +289,9 @@
       children:
       - id: JetpackBlueFilled
       - id: JetpackBlackFilled
+    - id: ClothingHandsConcussiveGauntlets # Mono - Drills for hands
+    - id: PowerCellAntiqueProto # Frontier
+    - id: NFShovel # Frontier
 
 - type: entityTable
   id: RandomGeneratorTable
