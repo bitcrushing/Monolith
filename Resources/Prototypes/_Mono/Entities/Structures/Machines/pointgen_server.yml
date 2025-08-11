@@ -1,0 +1,180 @@
+
+- type: entity
+  id: BaseResearchAndDevelopmentPointSource
+  parent: BaseMachinePowered
+  abstract: true
+  name: "Base PointGen Server"
+  description: "A basic processing array designed to additively analyze mysterious phenomena. This one generates 25 points per second, and needs 10 kilowatts to function."
+  components:
+  - type: ApcPowerReceiver
+    powerLoad: 10000
+  - type: Sprite
+    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
+    snapCardinals: true
+    layers:
+    - state: icon
+    - state: unlit
+      shader: unshaded
+      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+    - state: stripe
+      color: "#ac783c"
+    - state: stripe2
+      color: "#7e1cba"
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
+  - type: AmbientOnPowered
+  - type: AmbientSound
+    volume: -9
+    range: 5
+    sound:
+      path: /Audio/Ambience/Objects/server_fans.ogg
+  - type: ResearchClient
+  - type: ResearchPointSource
+    pointspersecond: 25
+    active: true
+  - type: ActivatableUI
+    key: enum.ResearchClientUiKey.Key
+  - type: ActivatableUIRequiresPower
+  - type: UserInterface
+    interfaces:
+      enum.ResearchClientUiKey.Key:
+        type: ResearchClientBoundUserInterface
+  - type: Appearance
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: machineFrame
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  id: BaseResearchAndDevelopmentPointSourceConstructible
+  parent: [ BaseResearchAndDevelopmentPointSource, ConstructibleMachine ]
+  components:
+  - type: Machine
+    board: PointGenV25Circuitboard
+  - type: WiresPanel
+  - type: WiresVisuals
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
+    snapCardinals: true
+    layers:
+    - state: icon
+    - state: unlit
+      shader: unshaded
+      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+    - state: panel
+      map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+    - state: stripe
+      color: "#ac783c"
+    - state: stripe2
+      color: "#7e1cba"
+
+# base end
+
+- type: entity
+  id: PointgenV25_server
+  parent: BaseResearchAndDevelopmentPointSourceConstructible
+  name: "PointGenV25 Server"
+  description: "A basic processing array designed to additively analyze mysterious phenomena. This one generates 25 points per second, and needs 10 kilowatts to function."
+  components:
+  - type: Machine
+    board: PointGenV25Circuitboard
+  - type: ResearchPointSource
+    pointspersecond: 25
+    active: true
+  - type: ApcPowerReceiver
+    powerLoad: 10000
+  - type: Sprite
+    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
+    snapCardinals: true
+    layers:
+    - state: icon
+    - state: unlit
+      shader: unshaded
+      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+    - state: panel
+      map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+    - state: stripe
+      color: "#ac783c"
+    - state: stripe2
+      color: "#7e1cba"
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
+
+- type: entity
+  id: PointgenV50_server
+  parent: BaseResearchAndDevelopmentPointSource
+  name: "PointGenV50 Server"
+  description: "An advanced computational array designed to recursively analyze mysterious phenomena. This one generates 50 points per second, and needs 15 kilowatts to function."
+  components:
+  - type: ResearchPointSource
+    pointspersecond: 50
+    active: true
+  - type: ApcPowerReceiver
+    powerLoad: 15000
+  - type: Sprite
+    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
+    snapCardinals: true
+    layers:
+    - state: icon
+    - state: unlit
+      shader: unshaded
+      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+    - state: stripe
+      color: "#1cbaa5"
+    - state: stripe2
+      color: "#7e1cba"
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
+
+- type: entity
+  id: PointgenV75_server
+  parent: BaseResearchAndDevelopmentPointSource
+  name: "PointGenV75 Server"
+  description: "A hyper-advanced supercomputer array designed to exponentially analyze mysterious phenomena. This one generates 75 points per second, and needs 20 kilowatts to function."
+  components:
+  - type: ResearchPointSource
+    pointspersecond: 75
+    active: true
+  - type: ApcPowerReceiver
+    powerLoad: 20000
+  - type: Sprite
+    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
+    snapCardinals: true
+    layers:
+    - state: icon
+    - state: unlit
+      shader: unshaded
+      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+    - state: stripe
+      color: "#d11d9e"
+    - state: stripe2
+      color: "#7e1cba"
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }

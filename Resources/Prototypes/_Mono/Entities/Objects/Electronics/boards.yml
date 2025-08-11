@@ -1,0 +1,12 @@
+- type: entity
+  id: PointGenV25Circuitboard
+  parent: BaseMachineCircuitboard
+  name: PointGenV25 server machine board
+  description: A machine printed circuit board for a PointGenV25 server.
+  components:
+  - type: MachineBoard
+    prototype: PointgenV25_server
+    stackRequirements:
+      Bluespace: 1
+      Cable: 10
+      Glass: 5
