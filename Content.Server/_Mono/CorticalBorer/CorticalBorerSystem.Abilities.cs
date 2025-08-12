@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2025 Coenx-flex
+// SPDX-FileCopyrightText: 2025 Cojoke
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -9,6 +10,8 @@ using Content.Shared._Shitmed.Medical.Surgery;
 using Content.Shared.Body.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 
 namespace Content.Server._Mono.CorticalBorer;
@@ -65,10 +68,8 @@ public sealed partial class CorticalBorerSystem
             return;
         }
 
-        // anything with bloodstream and has body parts... that you can do surgery on
-        if (!HasComp<BloodstreamComponent>(target) ||
-            !HasComp<BodyComponent>(target) ||
-            !HasComp<SurgeryTargetComponent>(target))
+        // anything with bloodstream
+        if (!HasComp<BloodstreamComponent>(target))
         {
             _popup.PopupEntity(Loc.GetString("cortical-borer-invalid-host", ("target", targetIdentity)), uid, uid, PopupType.Medium);
             return;
@@ -163,6 +164,14 @@ public sealed partial class CorticalBorerSystem
             return;
         }
 
+        // Host is dead, you can't take control
+        if (TryComp<MobStateComponent>(ent.Comp.Host, out var mobState) &&
+            mobState.CurrentState == MobState.Dead)
+        {
+            _popup.PopupEntity(Loc.GetString("cortical-borer-dead-host"), ent, ent, PopupType.Medium);
+            return;
+        }
+
         if (!TryComp<CorticalBorerInfestedComponent>(ent.Comp.Host, out var infestedComp))
             return;
 
@@ -170,7 +179,7 @@ public sealed partial class CorticalBorerSystem
             return;
 
         // idk how you would cause this...
-        if (infestedComp.ControlTimeEnd is not null)
+        if (ent.Comp.ControlingHost)
         {
             _popup.PopupEntity(Loc.GetString("cortical-borer-already-control"), ent, ent, PopupType.Medium);
             return;

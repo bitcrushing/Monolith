@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2025 Coenx-flex
+// SPDX-FileCopyrightText: 2025 Cojoke
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -7,6 +8,7 @@ using Content.Server.Body.Systems;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.DoAfter;
+using Content.Server.Ghost.Roles.Components;
 using Content.Server.Medical;
 using Content.Server.Medical.Components;
 using Content.Server.Nutrition.Components;
@@ -19,7 +21,11 @@ using Content.Shared.Database;
 using Content.Shared.Inventory;
 using Content.Shared.MedicalScanner;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Content.Shared.SSDIndicator;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
@@ -89,6 +95,8 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
 
     private void OnSpeakEvent(Entity<CorticalBorerComponent> ent, ref CheckTargetedSpeechEvent args)
     {
+        args.ChatTypeIgnore.Add(InGameICChatType.CollectiveMind);
+
         if (ent.Comp.Host.HasValue)
         {
             args.Targets.Add(ent);
@@ -281,12 +289,18 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
         if (comp.Host is not { } host)
             return;
 
-        infestedComp.ControlTimeEnd = _timing.CurTime + comp.ControlDuration;
+        // make sure they aren't dead, would throw the worm into a ghost mode and just kill em
+        if (TryComp<MobStateComponent>(ent.Comp.Host, out var mobState) &&
+            mobState.CurrentState == MobState.Dead)
+            return;
+
+        if (TryComp<MindContainerComponent>(host, out var mindContainer) &&
+            mindContainer.HasMind ||
+            HasComp<GhostRoleComponent>(host))
+            infestedComp.ControlTimeEnd = _timing.CurTime + comp.ControlDuration;
 
         if (_mind.TryGetMind(worm, out var wormMind, out _))
-        {
             infestedComp.BorerMindId = wormMind;
-        }
 
         if (_mind.TryGetMind(host, out var controledMind, out _))
         {
@@ -304,8 +318,13 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
         if (_actions.AddAction(host, "ActionEndControlHost") is {} actionEnd)
             infestedComp.RemoveAbilities.Add(actionEnd);
         if (comp.CanReproduce &&
-            _actions.AddAction(host, "ActionLayEggHost") is {} actionLay)
-            infestedComp.RemoveAbilities.Add(actionLay);
+            infestedComp.ControlTimeEnd != null) // you can't lay eggs with something you can control forever
+        {
+            if (_actions.AddAction(host, "ActionLayEggHost") is {} actionLay)
+                infestedComp.RemoveAbilities.Add(actionLay);
+        }
+
+        comp.ControlingHost = true;
 
         var str = $"{ToPrettyString(worm)} has taken control over {ToPrettyString(host)}";
 
@@ -325,7 +344,7 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
             return;
 
         // not controlling anyone
-        if (infestedComp.ControlTimeEnd is null)
+        if (!comp.ControlingHost)
             return;
 
         // remove all the actions set to remove
@@ -343,5 +362,7 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
 
         infestedComp.ControlTimeEnd = null;
         _container.CleanContainer(infestedComp.ControlContainer);
+
+        comp.ControlingHost = false;
     }
 }

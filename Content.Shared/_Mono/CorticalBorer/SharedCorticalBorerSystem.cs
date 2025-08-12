@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2025 Coenx-flex
+// SPDX-FileCopyrightText: 2025 Cojoke
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -13,9 +14,11 @@ using Content.Shared.MedicalScanner;
 using Content.Shared.Popups;
 using Content.Shared.StatusEffect;
 using Content.Shared.Coordinates;
+using Content.Shared.Damage;
 using Content.Shared.IdentityManagement;
 using Robust.Shared.Containers;
 using Robust.Shared.Serialization;
+using Robust.Shared.Serialization.Manager;
 
 namespace Content.Shared._Mono.CorticalBorer;
 
@@ -24,6 +27,8 @@ public partial class SharedCorticalBorerSystem : EntitySystem
     [Dependency] private readonly SharedBodySystem _bodySystem = default!;
     [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly ISerializationManager _serManager = default!;
+    [Dependency] private readonly DamageableSystem _damage = default!;
     [Dependency] protected readonly SharedPopupSystem _popup = default!;
     [Dependency] protected readonly SharedUserInterfaceSystem _ui = default!;
     [Dependency] protected readonly SharedActionsSystem _actions = default!;
@@ -45,18 +50,6 @@ public partial class SharedCorticalBorerSystem : EntitySystem
     {
         var (uid, comp) = ent;
 
-        if (!TryComp<BodyComponent>(target, out var body))
-            return;
-
-        var hasHead = _bodySystem.GetBodyChildrenOfType(target, BodyPartType.Head, body).Count() != 0;
-
-        // if we don't get a head don't try to stick the borer in it
-        if (!hasHead)
-        {
-            _popup.PopupEntity(Loc.GetString("cortical-borer-headless", ("target", Identity.Entity(target, EntityManager))), ent.Owner, ent.Owner, PopupType.Medium);
-            return;
-        }
-
         // Make sure the infected person is infected right
         var infestedComp = EnsureComp<CorticalBorerInfestedComponent>(target);
 
@@ -70,15 +63,39 @@ public partial class SharedCorticalBorerSystem : EntitySystem
         // Set up the Borer
         infestedComp.Borer = ent;
         comp.Host = target;
+
+        if (comp.AddOnInfest is not null)
+        {
+            foreach (var (key, compReg) in comp.AddOnInfest)
+            {
+                var compType = compReg.Component.GetType();
+                if (HasComp(ent, compType))
+                    continue;
+
+                var newComp = (Component) _serManager.CreateCopy(compReg.Component, notNullableOverride: true);
+                EntityManager.AddComponent(ent, newComp, true);
+            }
+        }
+
+        if (comp.RemoveOnInfest is not null)
+        {
+            foreach (var (key, compReg) in comp.RemoveOnInfest)
+                RemCompDeferred(ent, compReg.Component.GetType());
+        }
+
+        if (TryComp<DamageableComponent>(ent, out var damComp))
+            _damage.SetAllDamage(ent, damComp, 0);
     }
 
     public bool TryEjectBorer(Entity<CorticalBorerComponent> ent)
     {
+        var (uid, comp) = ent;
+
         if (ent.Comp.Host is not { } host)
             return false;
 
         // Make sure they get out of the host
-        if (!_container.TryRemoveFromContainer(ent.Owner))
+        if (!_container.TryRemoveFromContainer(uid))
             return false;
 
         // close all the UIs that relate to host
@@ -90,6 +107,25 @@ public partial class SharedCorticalBorerSystem : EntitySystem
 
         RemCompDeferred<CorticalBorerInfestedComponent>(ent.Comp.Host.Value);
         ent.Comp.Host = null;
+
+        if (comp.RemoveOnInfest is not null)
+        {
+            foreach (var (key, compReg) in comp.RemoveOnInfest)
+            {
+                var compType = compReg.Component.GetType();
+                if (HasComp(ent, compType))
+                    continue;
+
+                var newComp = (Component) _serManager.CreateCopy(compReg.Component, notNullableOverride: true);
+                EntityManager.AddComponent(ent, newComp, true);
+            }
+        }
+
+        if (comp.AddOnInfest is not null)
+        {
+            foreach (var (key, compReg) in comp.AddOnInfest)
+                RemCompDeferred(ent, compReg.Component.GetType());
+        }
 
         return true;
     }

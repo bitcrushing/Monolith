@@ -1,4 +1,6 @@
 # SPDX-FileCopyrightText: 2025 Coenx-flex
+# SPDX-FileCopyrightText: 2025 Cojoke
+# SPDX-FileCopyrightText: 2025 Redrover1760
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -12,6 +14,9 @@
     makeSentient: true
     allowSpeech: False
     allowMovement: true
+    requirements:
+    - !type:OverallPlaytimeRequirement
+      time: 36000 # 10 hrs
     name: cortical-borer-ghostrole-name
     description: cortical-borer-ghostrole-desc
     rules: ghost-role-information-freeagent-rules
@@ -50,18 +55,35 @@
     thresholds:
       0: Alive
       20: Dead
+  - type: Barotrauma # take away space immunity but still not gasp
+    damage:
+      types:
+        Blunt: 0.15
+  - type: Bloodstream
+    bloodlossDamage:
+      types:
+        Bloodloss: 0.5
+    bloodlossHealDamage:
+      types:
+        Bloodloss: -1
+    bleedReductionAmount: 2 # bleeding stops faster
   - type: MovementSpeedModifier
     baseWalkSpeed : 1.9
     baseSprintSpeed : 7.5
   - type: Tag
     tags:
     - Meat
-  - type: NightVision
-    color: "#512f59"
+  - type: ThermalVision
+    color: "#ae65bf"
+    lightRadius: 15
     activateSound: null
     deactivateSound: null
   - type: CorticalBorer
     eggProto: "CorticalBorerEgg"
+    addOnInfest:
+    - type: PressureImmunity
+    removeOnInfest:
+    - type: CanEscapeInventory
   - type: UserInterface
     interfaces:
       enum.CorticalBorerDispenserUiKey.Key:
@@ -95,6 +117,9 @@
     name: cortical-borer-ghostrole-name
     description: cortical-borer-ghostrole-desc
     rules: ghost-role-information-freeagent-rules
+    requirements:
+    - !type:OverallPlaytimeRequirement
+      time: 36000 # 10 hrs
     mindRoles:
     - MindRoleGhostRoleFreeAgent
   - type: GhostRoleMobSpawner

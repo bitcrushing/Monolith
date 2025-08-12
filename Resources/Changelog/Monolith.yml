@@ -10285,3 +10285,91 @@ Entries:
   id: 1149
   time: '2025-08-11T19:29:21.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/1855
+- author: Cojoke-dot
+  changes:
+    - type: Tweak
+      message: Cortical Borers now have thermals instead of night vision
+    - type: Tweak
+      message: Cortical Borers are no longer space immune outside of a host
+  id: 1150
+  time: '2025-08-12T00:48:45.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1868
+- author: Redrover1760
+  changes:
+    - type: Tweak
+      message: >-
+        Chimera and other mobs no longer can do the Jesus Waterwalk in space.
+        Bring a jetpack.
+    - type: Tweak
+      message: Chimera no longer reflect lasers.
+  id: 1151
+  time: '2025-08-12T00:49:40.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1867
+- author: Cojoke-dot
+  changes:
+    - type: Tweak
+      message: Cortical Borers now heal when entering a host
+    - type: Fix
+      message: Cortical Borers can no longer take control of dead bodies
+  id: 1152
+  time: '2025-08-12T01:54:11.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1871
+- author: Cojoke-dot
+  changes:
+    - type: Tweak
+      message: >-
+        Cortical Borers can now permanently take control of mobs who don't have
+        a ghost role or mind at the cost of being able to lay eggs.
+  id: 1153
+  time: '2025-08-12T04:01:59.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1875
+- author: Cojoke-dot
+  changes:
+    - type: Tweak
+      message: Cortical Borer's Take Control now has a 5-minute cooldown
+  id: 1154
+  time: '2025-08-12T04:42:57.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1876
+- author: Redrover1760
+  changes:
+    - type: Tweak
+      message: 10 hour playtime requirement for borers
+  id: 1155
+  time: '2025-08-12T05:06:41.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1877
+- author: Ilya246
+  changes:
+    - type: Fix
+      message: >-
+        Fixed a big source of server lag. Be watchful for any problems with
+        power networks.
+  id: 1156
+  time: '2025-08-12T12:58:27.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1879
+- author: WUBE Software
+  changes:
+    - type: Add
+      message: Ported factorio from goob.
+    - type: Add
+      message: Added upgrade kits from goob.
+    - type: Remove
+      message: Hyperlathes (replaced with upgrade kits).
+  id: 1157
+  time: '2025-08-12T16:17:31.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1866
+- author: Ilya246
+  changes:
+    - type: Add
+      message: >-
+        Added voidboots - magboots that let you walk on space. They can be
+        researched as T2 experimental.
+  id: 1158
+  time: '2025-08-12T16:22:50.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1881
+- author: BoskiYourk
+  changes:
+    - type: Tweak
+      message: Updates the AK-150 HAMMER's sprites
+  id: 1159
+  time: '2025-08-12T16:48:19.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/1804
