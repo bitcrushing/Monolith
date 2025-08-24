@@ -25,6 +25,9 @@
 # SPDX-FileCopyrightText: 2025 Havaren
 # SPDX-FileCopyrightText: 2025 Redrover1760
 # SPDX-FileCopyrightText: 2025 ScyronX
+# SPDX-FileCopyrightText: 2025 starch
+# SPDX-FileCopyrightText: 2025 tonotom
+# SPDX-FileCopyrightText: 2025 tonotom1
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -47,6 +50,9 @@
     - Ammonia
     - NitrousOxide
     - Frezon
+    - BZ #Funky
+    - Healium #Funky
+    - Nitrium #Funky
     #- Helium3 TODO: fusion
     # remove everything except oxygen to maintain oxygen ratio
     overflowGases:
@@ -58,6 +64,9 @@
     - Ammonia
     - NitrousOxide
     - Frezon
+    - BZ #Funky
+    - Healium #Funky
+    - Nitrium #Funky
     #- Helium3 TODO: fusion
   - type: AirIntake
   # for intake and filter to work
@@ -91,7 +100,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 1
     baseSprintSpeed: 2
-    weightlessModifier: 1.2 # 0.7->1.2
+    baseWeightlessModifier: 5 # Mono
   - type: Tag
     tags:
     - DoorBumpOpener
@@ -132,7 +141,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 1000 # Goobstation
+        damage: 2500 # Mono
       behaviors:
       - !type:PlaySoundBehavior
         sound:
