@@ -83,6 +83,8 @@
   - type: NoRotateOnMove
   - type: Input
     context: "human"
+  - type: StaticPrice
+    price: 100
 
 - type: entity
   parent: BaseWeaponTurret
