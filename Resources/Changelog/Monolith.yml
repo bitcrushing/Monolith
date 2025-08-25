@@ -11134,3 +11134,65 @@ Entries:
   id: 1243
   time: '2025-08-24T16:16:46.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/2016
+- author: Danchi299
+  changes:
+    - type: Add
+      message: You can now handcraft shooting target for 5 steel each.
+  id: 1244
+  time: '2025-08-24T19:58:57.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2026
+- author: SlamBamActionman
+  changes:
+    - type: Fix
+      message: Crates on conveyor belts can now go around tight corners again!
+  id: 1245
+  time: '2025-08-24T20:03:28.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2025
+- author: Danchi299
+  changes:
+    - type: Tweak
+      message: Ship telecommunications servers now start with shortband encryption key.
+  id: 1246
+  time: '2025-08-24T20:47:10.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2023
+- author: Ilya246
+  changes:
+    - type: Fix
+      message: Fixed radar blips not showing up away from CO.
+  id: 1247
+  time: '2025-08-24T20:51:41.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2027
+- author: Hyenh
+  changes:
+    - type: Add
+      message: Added new ponchos
+  id: 1248
+  time: '2025-08-24T20:53:11.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2017
+- author: tonotom1
+  changes:
+    - type: Tweak
+      message: >-
+        Scrap processor recipes are no longer discount-exempt: This means matter
+        bin upgrades work on it now
+  id: 1249
+  time: '2025-08-25T01:49:50.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2030
+- author: Cojoke-dot
+  changes:
+    - type: Tweak
+      message: The price of some ships has been increased to match appraisal
+  id: 1250
+  time: '2025-08-25T02:17:44.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2032
+- author: Ilya246
+  changes:
+    - type: Add
+      message: Borgs can now build things by drag and dropping - goob port.
+    - type: Tweak
+      message: Borgs can now (un)lock borgs.
+    - type: Tweak
+      message: Borgs can now pilot mechs.
+  id: 1251
+  time: '2025-08-25T09:30:27.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/2036
