@@ -12,7 +12,7 @@
   - NFBlueprintRped
   technologyPrerequisites:
   - AdvancedParts
-  position: 1, 0
+  position: -1, 8
 
 # Tier 3
 
@@ -32,7 +32,7 @@
   - NFBlueprintSuperMatterBinStockPart
   technologyPrerequisites:
   - AdvancedParts
-  position: 0, -1
+  position: 0, 16
 
 - type: technology
   id: MagnetsTechAdvanced
@@ -47,7 +47,7 @@
   technologyPrerequisites:
   - MagnetsTech
   - SuperParts
-  position: -2, 0
+  position: -4, -1
 
 - type: technology
   id: HardsuitsExperimentalRD
@@ -55,9 +55,9 @@
   entityIcon: ClothingOuterHardsuitRd
   discipline: Experimental
   tier: 3
-  cost: 65000
+  cost: 35000
   recipeUnlocks:
     - ClothingOuterHardsuitRd
   technologyPrerequisites:
-  - HardsuitsArmored
-  position: 4, 7
+  - HardsuitsAdvanced
+  position: 3, 6

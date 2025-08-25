@@ -15,8 +15,8 @@
   recipeUnlocks:
   - CharonSlugUniversal
   technologyPrerequisites:
-  - UniversalBallisticSci1
-  position: 6, 15
+  - UniversalPlastitaniumCore
+  position: 7, 7
 
 - type: technology
   id: UniversalTorpedoAmmo
@@ -24,11 +24,13 @@
   entityIcon: Asm220TorpedoHE
   discipline: FactionUniversal
   tier: 2
-  cost: 30000
+  cost: 20000
   recipeUnlocks:
   - ASM220TorpedoHEUniversal
   - ASM220TorpedoECMUniversal
-  position: 11, 14
+  technologyPrerequisites:
+  - UniversalPlastitaniumCore
+  position: 8, 7
 
 - type: technology
   id: UniversalTorpedoAmmoAdvanced
@@ -41,8 +43,8 @@
   - ASM220TorpedoLOSATUniversal
   technologyPrerequisites:
   - UniversalTorpedoAmmo
-  - UniversalBallisticSci2
-  position: 10, 14
+  - UniversalSynthalloyCore
+  position: 8, 12
 
 - type: technology
   id: Universal150mmAmmo
@@ -55,8 +57,8 @@
   - 150mmApShellUniversal
   - 150mmEmpShellUniversal
   technologyPrerequisites:
-  - UniversalBallisticSci1
-  position: 8, 15
+  - UniversalSteelCore
+  position: 8, 2
 
 - type: technology
   id: UniversalLightFighterOrdinance
@@ -69,8 +71,8 @@
   - GPOL50BombUniversal
   - ZenithRocketUniversal
   technologyPrerequisites:
-  - UniversalBallisticSci1
-  position: 7, 16
+  - UniversalSteelCore
+  position: 9, 2
 
 - type: technology
   id: UniversalAdvancedLightFighterOrdinance
@@ -83,5 +85,5 @@
   - QuasarAcceleratorUniversal
   technologyPrerequisites:
   - UniversalLightFighterOrdinance
-  - UniversalBallisticSci2
-  position: 9, 16
+  - UniversalPlastitaniumCore
+  position: 9, 4

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2025 Onezero0
+# SPDX-FileCopyrightText: 2025 core-mene
 # SPDX-FileCopyrightText: 2025 starch
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -8,7 +10,7 @@
   entityIcon: WeaponRifleLecter
   discipline: TsfmcWeaponry
   tier: 1
-  cost: 20000
+  cost: 25000
   recipeUnlocks:
   - WeaponRifleLecterTSF
   - WeaponRifleVulcanTSF
@@ -26,7 +28,9 @@
   - Magazine8x65mmSKR
   - Magazine8x65mmEmpty
   - AmmoBox8x65mmSKR
-  position: 22, 10
+  technologyPrerequisites:
+  - UniversalMaterialResearchT1
+  position: 12, 2
 
 - type: technology
   id: TsfAnnie
@@ -34,7 +38,7 @@
   entityIcon: WeaponRifleAnnie
   discipline: TsfmcWeaponry
   tier: 2
-  cost: 15000
+  cost: 25000
   recipeUnlocks:
   - WeaponRifleAnnieTSF
   - Magazine7.62x39mmFMJ
@@ -42,8 +46,8 @@
   - AmmoBox7.62x39mmFMJ
   technologyPrerequisites:
   - TsfBasicGuns
-  - TsfMaterialResearchT1
-  position: 22, 13
+  - UniversalMaterialResearchT2
+  position: 12, 7
 
 - type: technology
   id: TsfGrizzly
@@ -55,10 +59,9 @@
   recipeUnlocks:
   - WeaponLMGGrizzlyTSF
   technologyPrerequisites:
-  - TsfBasicGuns
   - TsfAnnie
-  - TsfMaterialResearchT2
-  position: 21, 14
+  - UniversalMaterialResearchT2
+  position: 12, 8
 
 - type: technology
   id: TsfMarsocGuns
@@ -74,8 +77,8 @@
   #- Magazine8x65mmEmptyBox
   technologyPrerequisites:
   - TsfAnnie
-  - TsfSynthalloy
-  position: 22, 16
+  - UniversalMaterialResearchT3
+  position: 12, 12
 
 - type: technology
   id: TsfIcws
@@ -83,13 +86,12 @@
   entityIcon: WeaponRifleXlr556
   discipline: TsfmcWeaponry
   tier: 3
-  cost: 15000
+  cost: 30000
   recipeUnlocks:
   - WeaponRifleXlr556Tsf
   - Magazine5.56x45mmFMJ
   - Magazine5.56x45mmEmpty
   - AmmoBox5.56x45mmFMJ
   technologyPrerequisites:
-  - TsfSynthalloy
   - TsfMarsocGuns
-  position: 22, 17
+  position: 12, 13

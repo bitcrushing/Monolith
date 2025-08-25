@@ -22,6 +22,7 @@
 # SPDX-FileCopyrightText: 2025 Ark
 # SPDX-FileCopyrightText: 2025 Ilya246
 # SPDX-FileCopyrightText: 2025 Myzumi
+# SPDX-FileCopyrightText: 2025 Onezero0
 # SPDX-FileCopyrightText: 2025 Redrover1760
 # SPDX-FileCopyrightText: 2025 Whatstone
 # SPDX-FileCopyrightText: 2025 beck-thompson
@@ -46,7 +47,9 @@
   - OreProcessorIndustrialMachineCircuitboard
   - ClothingMaskWeldingGas
   - MechEquipmentDrill # Goobstation
-  position: 2, -3
+  technologyPrerequisites:
+  - BasicParts
+  position: -2, 2
 
 - type: technology
   id: SpaceScanning
@@ -54,12 +57,14 @@
   entityIcon: HandHeldMassScanner
   discipline: Industrial
   tier: 1
-  cost: 15000
+  cost: 10000
   recipeUnlocks:
   - RadarConsoleCircuitboard
   - HandHeldMassScanner
   - BorgModuleGPS
-  position: 1, -4
+  technologyPrerequisites:
+  - BasicParts
+  position: -5, 2
 
 - type: technology
   id: AdvancedPowercells
@@ -73,8 +78,8 @@
   - TurboItemRechargerCircuitboard
   - SMESAdvancedMachineCircuitboard
   technologyPrerequisites:
-  - AdvancedParts
-  position: 3, -4
+  - PowerGeneration
+  position: -2, 7
 
 - type: technology
   id: MechanicalCompression
@@ -86,8 +91,8 @@
   recipeUnlocks:
   - FlatpackerMachineCircuitboard
   technologyPrerequisites:
-  - AdvancedParts
-  position: 3, -3
+  - RapidPartExchange
+  position: -1, 7
 
 - type: technology
   id: IndustrialEngineering
@@ -115,8 +120,8 @@
   # End Goobstation Additions
   - SheetifierMachineCircuitboard
   technologyPrerequisites:
-  - AdvancedParts
-  position: 4, -3
+  - MechanicalCompression
+  position: -1, 6
 
 - type: technology
   id: PowerGeneration
@@ -135,7 +140,7 @@
   - ContainmentFieldGeneratorCircuitboard # Mono
   technologyPrerequisites:
   - AdvancedParts
-  position: 3, -5
+  position: -2, 8
 
 - type: technology
   id: AtmosphericTech
@@ -148,8 +153,8 @@
   - ThermomachineFreezerMachineCircuitBoard
   - GasRecyclerMachineCircuitboard
   technologyPrerequisites:
-  - AdvancedParts
-  position: 2, -4
+  - BasicParts
+  position: -4, 2
 
 # Tier 2
 
@@ -170,12 +175,15 @@
   - SmallGyroscopeMachineCircuitboard # Frontier
   technologyPrerequisites:
   - AdvancedParts
-  position: 1, 5
+  - PowerGeneration
+  - SpaceScanning
+  - AtmosphericTech
+  position: -5, 7
 
 - type: technology
   id: AdvancedAtmospherics
   name: research-technology-advanced-atmospherics
-  entityIcon: Crystallizer
+  entityIcon: GasThermoMachineHellfireFreezer
   discipline: Industrial
   tier: 2
   cost: 25000
@@ -187,7 +195,7 @@
   #  - FireExtinguisherBluespace # DeltaV
   technologyPrerequisites:
   - AtmosphericTech
-  position: 1, -5
+  position: -4, 3
 
 - type: technology
   id: AdvancedToolsTechnology
@@ -195,7 +203,7 @@
   entityIcon: WelderExperimental
   discipline: Industrial
   tier: 2
-  cost: 75000
+  cost: 45000
   recipeUnlocks:
   - WelderExperimental
   - PowerDrill
@@ -210,7 +218,7 @@
   #- NFBlueprintWelderExperimental # Frontier
   technologyPrerequisites:
   - SuperParts
-  position: 1, -3
+  position: -1, 18
 
 - type: technology
   id: MassExcavation
@@ -218,7 +226,7 @@
   entityIcon: MiningDrillDiamond
   discipline: Industrial
   tier: 2
-  cost: 50000
+  cost: 25000
   recipeUnlocks:
   #- OreBagOfHolding
   - MiningDrillDiamond
@@ -229,8 +237,9 @@
   - BorgModuleAdvancedMining # Frontier
   - MechEquipmentDrillDiamond
   technologyPrerequisites:
-  - SalvageEquipment
-  position: 2, -2
+  - SalvageWeapons
+  - AdvancedParts
+  position: -2, 4
 
 # Tier 3
 
@@ -259,7 +268,7 @@
   entityIcon: PowerCellMicroreactor
   discipline: Industrial
   tier: 3
-  cost: 80000
+  cost: 30000
   recipeUnlocks:
   - PowerCellMicroreactor
   - NFBlueprintPowerCellMicroreactor # Frontier
@@ -268,15 +277,15 @@
   technologyPrerequisites:
   - AdvancedPowercells
   - SuperParts
-  position: 4, -4
+  position: -2, 6
 
 - type: technology
   id: RapidConstruction
   name: research-technology-rapid-construction
   entityIcon: RCD
   discipline: Industrial
-  tier: 2
-  cost: 60000
+  tier: 3
+  cost: 30000
   recipeUnlocks:
 #  - ShipyardRCD # Frontier
 #  - ShipyardRCDAmmo # Frontier
@@ -284,5 +293,5 @@
   - RCDAmmo
   - NFBlueprintRCDAmmo
   technologyPrerequisites:
-  - AdvancedParts
-  position: 1, -2
+  - AdvancedToolsTechnology
+  position: -1, 19

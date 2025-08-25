@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2025 HungryCuban
+# SPDX-FileCopyrightText: 2025 Onezero0
 # SPDX-FileCopyrightText: 2025 starch
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -9,14 +10,13 @@
   entityIcon: ShipVoucherProwler
   discipline: RogueShipyard
   tier: 1
-  cost: 50000
+  cost: 100000
   recipeUnlocks:
   - ProwlerVoucherRogue
   technologyPrerequisites:
   - RogueStealthsuit
-  - RogueEmag
-  - RogueEngineeringResearchT2
-  position: 14, 21
+  - UniversalMaterialResearchT3
+  position: 22, 11
 
 - type: technology
   id: RogueJaws
@@ -24,12 +24,12 @@
   entityIcon: JawsOfLife
   discipline: RogueGear
   tier: 1
-  cost: 15000
+  cost: 10000
   recipeUnlocks:
   - JawsOfLifeRogue
   technologyPrerequisites:
-  - RogueEngineeringResearchT1
-  position: 13, 17
+  - UniversalMaterialResearchT1
+  position: 20, -1
 
 - type: technology
   id: RogueHypospray
@@ -37,12 +37,12 @@
   entityIcon: Hypospray
   discipline: RogueGear
   tier: 2
-  cost: 25000
+  cost: 10000
   recipeUnlocks:
   - HyposprayRogue
   technologyPrerequisites:
-  - RogueEngineeringResearchT1
-  position: 12, 17
+  - UniversalMaterialResearchT1
+  position: 20, -2
 
 - type: technology
   id: RogueEmag
@@ -54,8 +54,8 @@
   recipeUnlocks:
   - EmagRogue
   technologyPrerequisites:
-  - RogueAdvancedEquipment
-  position: 12, 18
+  - UniversalMaterialResearchT2
+  position: 21, 4
 
 - type: technology
   id: RogueEmag2
@@ -63,13 +63,12 @@
   entityIcon: AccessBreaker
   discipline: RogueGear
   tier: 3
-  cost: 27500
+  cost: 25000
   recipeUnlocks:
   - AccessBreakerRogue
   technologyPrerequisites:
-  - RogueEmag
-  - RogueEngineeringResearchT2
-  position: 11, 18
+  - UniversalMaterialResearchT2
+  position: 21, 3
 
 - type: technology
   id: RogueThermals
@@ -81,5 +80,5 @@
   recipeUnlocks:
   - ClothingEyesThermalVisionGoggles
   technologyPrerequisites:
-  - RogueBasicEquipment
-  position: 16, 18
+  - UniversalMaterialResearchT1
+  position: 20, -3

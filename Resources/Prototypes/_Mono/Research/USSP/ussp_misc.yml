@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2025 BoskiYourk
 # SPDX-FileCopyrightText: 2025 HungryCuban
+# SPDX-FileCopyrightText: 2025 Onezero0
 # SPDX-FileCopyrightText: 2025 starch
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -14,7 +15,9 @@
   recipeUnlocks:
   - SeismicChargeUSSP
   - TearGasGrenadeUSSP
-  position: 16, 9
+  technologyPrerequisites:
+  - UniversalMaterialResearchT1
+  position: 16, -1
 
 - type: technology
   id: UsspMediumExplosives
@@ -28,4 +31,4 @@
   recipeUnlocks:
   - GrenadeShrapnelUSSP
   - GrenadeIncendiaryUSSP
-  position: 16, 10
+  position: 16, -2

@@ -25,6 +25,7 @@
 # SPDX-FileCopyrightText: 2024 metalgearsloth
 # SPDX-FileCopyrightText: 2025 Ark
 # SPDX-FileCopyrightText: 2025 Blu
+# SPDX-FileCopyrightText: 2025 Onezero0
 # SPDX-FileCopyrightText: 2025 Redrover1760
 # SPDX-FileCopyrightText: 2025 Southbridge
 # SPDX-FileCopyrightText: 2025 dustylens
@@ -41,7 +42,7 @@
   entityIcon: hydroponicsTray
   discipline: CivilianServices
   tier: 1
-  cost: 15000 # Delta Price. 5000 is pre-adjustment.
+  cost: 10000
   recipeUnlocks:
   - BorgModuleGardening
   - BorgModuleHarvesting
@@ -53,8 +54,8 @@
   - NFBlueprintPlantAnalyzerEmpty # Frontier
   #- NFBlueprintPlantBagOfHolding # Frontier
   technologyPrerequisites:
-  - AdvancedParts
-  position: -6, 3
+  - BasicParts
+  position: 3, -1
 
 - type: technology
   id: CritterMechs
@@ -62,7 +63,7 @@
   entityIcon: MechHamtrBattery
   discipline: CivilianServices
   tier: 1
-  cost: 15000
+  cost: 10000
   recipeUnlocks:
   - HamtrHarness
   - HamtrLArm
@@ -73,7 +74,9 @@
   - HamtrPeripheralsElectronics
   - MechEquipmentGrabberSmall
   - VimHarness
-  position: -6, 4
+  technologyPrerequisites:
+  - RipleyAPLU
+  position: 3, 10
 
 - type: technology
   id: AudioVisualCommunication
@@ -92,8 +95,8 @@
   - TelecomServerCircuitboard
   #  - HolopadMachineCircuitboard # Frontier: needs work before use
   technologyPrerequisites:
-  - AdvancedParts
-  position: -5, 2
+  - BasicParts
+  position: 6, -1
 
 - type: technology
   id: AdvancedEntertainment
@@ -110,7 +113,7 @@
   - JukeboxCircuitBoard
   technologyPrerequisites:
   - AudioVisualCommunication
-  position: -6, 2
+  position: 6, -2
 
 - type: technology
   id: RoboticCleanliness
@@ -118,10 +121,12 @@
   entityIcon: BorgChassisJanitor
   discipline: CivilianServices
   tier: 1
-  cost: 15000
+  cost: 10000
   recipeUnlocks:
   - BorgModuleAdvancedCleaning
-  position: -5, 4
+  technologyPrerequisites:
+  - BasicParts
+  position: 5, -1
 
 - type: technology
   id: MeatManipulation
@@ -135,7 +140,9 @@
   - BiogeneratorMachineCircuitboard
   - BiofabricatorMachineCircuitboard # mono
   - BiomassReclaimerMachineCircuitboard
-  position: -5, 3
+  technologyPrerequisites:
+    - AdvancedParts
+  position: -3, 10
 
 # Tier 2
 
@@ -145,7 +152,7 @@
   entityIcon: FloorTileItemAstroGrass
   discipline: CivilianServices
   tier: 2
-  cost: 15000
+  cost: 10000
   recipeUnlocks:
   - FauxTileAstroGrass
   - FauxTileMowedAstroGrass
@@ -153,7 +160,9 @@
   - FauxTileAstroIce
   - FauxTileAstroSnow
   - FauxTileAstroAsteroidSand
-  position: -4, 2
+  technologyPrerequisites:
+  - Hydroponics
+  position: 3, -2
 
 - type: technology
   id: BiochemicalStasis
@@ -168,8 +177,9 @@
   - CryostasisBeaker
   - SyringeCryostasis
   technologyPrerequisites:
-  - AdvancedTreatment
-  position: -4, 3
+  - MeatManipulation
+  - ChemicalDispensary
+  position: -4, 11
 
 # Shitmed Change Start
 - type: technology
@@ -189,8 +199,10 @@
   - BorgModuleAdvancedSurgery
   - DefibrillatorCompact # Mono
   technologyPrerequisites:
-  - AdvancedParts
-  position: -3, 3
+  - SuperParts
+  - IndustrialMedicine
+  - MeatManipulation
+  position: -2, 11
 
 - type: technology
   id: CyberneticEnhancements
@@ -198,7 +210,7 @@
   entityIcon: SecurityCyberneticEyes
   discipline: CivilianServices
   tier: 2
-  cost: 65000
+  cost: 25000
   recipeUnlocks:
   - JawsOfLifeLeftArm
   - JawsOfLifeRightArm
@@ -210,8 +222,8 @@
   - SecurityCyberneticEyes
   - MedicalCyberneticEyes
   technologyPrerequisites:
-  - SuperParts
-  position: -3, 4
+  - AdvancedTreatment
+  position: -2, 12
 # Shitmed Change End
 
 - type: technology
@@ -228,7 +240,7 @@
   - ReinforcedJug # Frontier
   technologyPrerequisites:
   - RoboticCleanliness
-  position: -5, 5
+  position: 5, -2
 
 - type: technology
   id: HONKMech
@@ -236,7 +248,7 @@
   entityIcon: MechHonkerFilled
   discipline: CivilianServices
   tier: 2
-  cost: 25000
+  cost: 15000
   recipeUnlocks:
   - HonkerHarness
   - HonkerLArm
@@ -247,9 +259,11 @@
   - HonkerPeripheralsElectronics
   - HonkerTargetingElectronics
   - MechEquipmentHorn
+  - MechEquipmentHonkerBananaMortar
+  - MechEquipmentHonkerMousetrapMortar
   technologyPrerequisites:
-  - AdvancedParts
-  position: -6, 5
+  - CritterMechs
+  position: 4, 10
 
 - type: technology
   id: AdvancedSpray
@@ -257,14 +271,14 @@
   entityIcon: WeaponSprayNozzle
   discipline: CivilianServices
   tier: 2
-  cost: 30000
+  cost: 15000
   recipeUnlocks:
   - WeaponSprayNozzle
   - ClothingBackpackWaterTank
   technologyPrerequisites:
   - AdvancedParts
   - AdvancedCleaning
-  position: -5, 6
+  position: 5, -4
 
     # Tier 3
 
@@ -298,7 +312,7 @@
   entityIcon: BluespaceBeaker
   discipline: CivilianServices
   tier: 3
-  cost: 80000
+  cost: 45000
   recipeUnlocks:
   - BluespaceBeaker
   - SyringeBluespace
@@ -310,4 +324,5 @@
   - NFBlueprintVialBluespace # Frontier
   technologyPrerequisites:
   - SuperParts
-  position: -4, 4
+  - BiochemicalStasis
+  position: -4, 12

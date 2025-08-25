@@ -1,5 +1,7 @@
 # SPDX-FileCopyrightText: 2025 BoskiYourk
 # SPDX-FileCopyrightText: 2025 HungryCuban
+# SPDX-FileCopyrightText: 2025 Onezero0
+# SPDX-FileCopyrightText: 2025 core-mene
 # SPDX-FileCopyrightText: 2025 starch
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -21,7 +23,7 @@
   - Magazine9x19mmSubMachineGunFMJ
   - Magazine9x19mmSubMachineGunEmpty
   - AmmoBox9x19mmFMJ
-  position: 14, 9
+  position: 16, 2
 
 - type: technology
   id: UsspMediumGuns
@@ -40,7 +42,8 @@
   - Magazine7.62x39mmEmpty
   technologyPrerequisites:
   - UsspBasicGuns
-  position: 14, 10
+  - UniversalMaterialResearchT2
+  position: 16, 7
 
 - type: technology
   id: UsspAk410
@@ -53,7 +56,7 @@
   - WeaponRifleAK410USSP
   technologyPrerequisites:
   - UsspMediumGuns
-  position: 13, 10
+  position: 16, 8
 
 - type: technology
   id: UsspAdvancedGuns
@@ -72,7 +75,8 @@
   - AmmoBox23x75mmDozd
   technologyPrerequisites:
   - UsspMediumGuns
-  position: 14, 11
+  - UniversalMaterialResearchT3
+  position: 16, 12
 
 - type: technology
   id: UsspAdvancedAmmo
@@ -87,4 +91,4 @@
   - AmmoBox23x75mmFlashbang
   technologyPrerequisites:
   - UsspAdvancedGuns
-  position: 13, 11
+  position: 16, 13

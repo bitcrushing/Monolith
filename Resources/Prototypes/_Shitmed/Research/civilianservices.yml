@@ -10,12 +10,9 @@
   entityIcon: OmnimedTool
   discipline: CivilianServices
   tier: 3
-  cost: 85000
+  cost: 45000
   recipeUnlocks:
   - ShitmedOmnimedTool
   technologyPrerequisites:
-  - SuperParts
-  - AdvancedTreatment
-  - ChemicalDispensary
-  - IndustrialMedicine
-  position: -3, 1
+  - CyberneticEnhancements
+  position: -2, 13
