@@ -169,10 +169,6 @@
           Quantity: 5
         - ReagentId: Protein
           Quantity: 3
-  - type: Construction
-    graph: ResomiCutlet
-    node: cutlet cooked
-    defaultTarget: resomi cutlet
 
 - type: entity
   name: bucket of fried resomi
