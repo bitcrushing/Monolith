@@ -16,6 +16,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+// Mono - Refactored into smaller subsystems
 using System.Threading.Tasks;
 using Content.Server.Ghost.Roles.Components;
 using Content.Shared.Parallax.Biomes;

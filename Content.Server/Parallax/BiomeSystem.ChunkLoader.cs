@@ -16,6 +16,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+// Mono - Refactored into smaller subsystems
 using Content.Shared.Parallax.Biomes;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;

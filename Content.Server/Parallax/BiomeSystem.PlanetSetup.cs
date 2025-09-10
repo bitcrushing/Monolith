@@ -16,6 +16,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+// Mono - Refactored into smaller subsystems
 using Content.Server._Mono.Planets;
 using Content.Shared.Atmos;
 using Content.Shared.Gravity;
