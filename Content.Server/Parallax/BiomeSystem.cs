@@ -67,10 +67,11 @@ public sealed partial class BiomeSystem : SharedBiomeSystem
     private float _loadRange = DefaultLoadRange;
     private static readonly ProtoId<TagPrototype> AllowBiomeLoadingTag = "AllowBiomeLoading";
 
-    private List<(Vector2i, Tile)> _tiles = new();
-
     private ObjectPool<HashSet<Vector2i>> _tilePool =
         new DefaultObjectPool<HashSet<Vector2i>>(new SetPolicy<Vector2i>(), 256);
+
+    private float _updateTimer = 0f;
+    private const float UpdateInterval = 1f / 10f;
 
     /// <summary>
     /// Load area for chunks containing tiles, decals etc.
@@ -155,6 +156,13 @@ public sealed partial class BiomeSystem : SharedBiomeSystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // Rate limit according to update interval instead of every frame
+        _updateTimer += frameTime;
+        if (_updateTimer < UpdateInterval)
+            return;
+        _updateTimer = 0f;
+
         var biomes = AllEntityQuery<BiomeComponent>();
 
         while (biomes.MoveNext(out var biome))
@@ -165,18 +173,29 @@ public sealed partial class BiomeSystem : SharedBiomeSystem
             _activeChunks.Add(biome, _tilePool.Get());
             _markerChunks.GetOrNew(biome);
         }
+
         ProcessPlayerChunkRequests();
+
+        // Early exit if no players around chunk
+        if (_handledEntities.Count == 0)
+        {
+            CleanupUpdateCycle();
+            return;
+        }
 
         var loadBiomes = AllEntityQuery<BiomeComponent, MapGridComponent>();
 
         while (loadBiomes.MoveNext(out var gridUid, out var biome, out var grid))
         {
-
             // If not MapInit don't run it.
             if (biome.LifeStage < ComponentLifeStage.Running)
                 continue;
 
             if (!biome.Enabled)
+                continue;
+
+            // Only process biomes with active chunks
+            if (!_activeChunks.ContainsKey(biome))
                 continue;
 
             // Load new chunks
@@ -185,6 +204,11 @@ public sealed partial class BiomeSystem : SharedBiomeSystem
             UnloadChunks(biome, gridUid, grid, biome.Seed);
         }
 
+        CleanupUpdateCycle();
+    }
+
+    private void CleanupUpdateCycle()
+    {
         _handledEntities.Clear();
 
         foreach (var tiles in _activeChunks.Values)
