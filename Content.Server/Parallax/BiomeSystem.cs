@@ -167,12 +167,6 @@ public sealed partial class BiomeSystem : SharedBiomeSystem
             return;
         _updateTimer = 0f;
 
-        // Update unload timer and check if it's time to unload chunks
-        _unloadTimer += frameTime;
-        bool shouldUnloadChunks = _unloadTimer >= UnloadInterval;
-        if (shouldUnloadChunks)
-            _unloadTimer = 0f;
-
         var biomes = AllEntityQuery<BiomeComponent>();
 
         while (biomes.MoveNext(out var biome))
@@ -208,12 +202,8 @@ public sealed partial class BiomeSystem : SharedBiomeSystem
             if (!_activeChunks.ContainsKey(biome))
                 continue;
 
-            // Load new chunks (frequent - every update)
             LoadChunks(biome, gridUid, grid, biome.Seed);
-
-            // Unload old chunks (aggressive - every 5 seconds)
-            if (shouldUnloadChunks)
-                UnloadChunks(biome, gridUid, grid, biome.Seed);
+            UnloadChunks(biome, gridUid, grid, biome.Seed);
         }
 
         CleanupUpdateCycle();
