@@ -20,16 +20,27 @@
 using Content.Shared.Parallax.Biomes;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using System.Linq;
 
 namespace Content.Server.Parallax;
 
 public sealed partial class BiomeSystem
 {
     private readonly List<(Vector2i, Tile)> _chunkLoaderTiles = new();
+    private readonly List<(EntityUid, Vector2i)> _chunkLoaderEntities = new();
+    private readonly List<(string, EntityCoordinates)> _chunkLoaderDecals = new();
+    private readonly List<EntityUid> _chunkLoaderEntitiesToDelete = new();
+    private readonly List<uint> _chunkLoaderDecalsToDelete = new();
 
+    // Pre-size data structures because malloc is still real
     private void InitializeChunkLoader()
     {
-        // ChunkLoader methods are now part of this partial class
+        var expectedChunkSize = ChunkSize * ChunkSize;
+        _chunkLoaderTiles.Capacity = expectedChunkSize;
+        _chunkLoaderEntities.Capacity = expectedChunkSize / 4;
+        _chunkLoaderDecals.Capacity = expectedChunkSize / 8;
+        _chunkLoaderEntitiesToDelete.Capacity = expectedChunkSize / 4;
+        _chunkLoaderDecalsToDelete.Capacity = expectedChunkSize / 8;
     }
 
     /// <summary>
@@ -61,27 +72,39 @@ public sealed partial class BiomeSystem
         int seed,
         HashSet<Vector2i> modified)
     {
-        for (var x = 0; x < ChunkSize; x++)
+        _chunkLoaderTiles.Clear();
+
+        var startX = chunk.X;
+        var startY = chunk.Y;
+        var endX = startX + ChunkSize;
+        var endY = startY + ChunkSize;
+
+        // Collect
+        for (var x = startX; x < endX; x++)
         {
-            for (var y = 0; y < ChunkSize; y++)
+            for (var y = startY; y < endY; y++)
             {
-                var indices = new Vector2i(x + chunk.X, y + chunk.Y);
+                var indices = new Vector2i(x, y);
 
                 if (modified.Contains(indices))
                     continue;
 
                 if (_mapSystem.TryGetTileRef(gridUid, grid, indices, out var tileRef) && !tileRef.Tile.IsEmpty)
+                {
                     continue;
+                }
 
-                if (!TryGetBiomeTile(indices, component.Layers, seed, (gridUid, grid), out var biomeTile))
-                    continue;
-
-                _chunkLoaderTiles.Add((indices, biomeTile.Value));
+                if (TryGetBiomeTile(indices, component.Layers, seed, (gridUid, grid), out var biomeTile))
+                {
+                    _chunkLoaderTiles.Add((indices, biomeTile.Value));
+                }
             }
         }
 
-        _mapSystem.SetTiles(gridUid, grid, _chunkLoaderTiles);
-        _chunkLoaderTiles.Clear();
+        if (_chunkLoaderTiles.Count > 0) // Don't need to call setTiles if there's nothing to load
+        {
+            _mapSystem.SetTiles(gridUid, grid, _chunkLoaderTiles);
+        }
     }
 
     private void LoadEntities(
@@ -95,11 +118,19 @@ public sealed partial class BiomeSystem
         var loadedEntities = new Dictionary<EntityUid, Vector2i>();
         component.LoadedEntities.Add(chunk, loadedEntities);
 
-        for (var x = 0; x < ChunkSize; x++)
+        _chunkLoaderEntities.Clear();
+
+        var startX = chunk.X;
+        var startY = chunk.Y;
+        var endX = startX + ChunkSize;
+        var endY = startY + ChunkSize;
+
+        // Collect
+        for (var x = startX; x < endX; x++)
         {
-            for (var y = 0; y < ChunkSize; y++)
+            for (var y = startY; y < endY; y++)
             {
-                var indices = new Vector2i(x + chunk.X, y + chunk.Y);
+                var indices = new Vector2i(x, y);
 
                 if (modified.Contains(indices))
                     continue;
@@ -109,6 +140,15 @@ public sealed partial class BiomeSystem
                 if (anchored.MoveNext(out _) || !TryGetEntity(indices, component, (gridUid, grid), out var entPrototype))
                     continue;
 
+                _chunkLoaderEntities.Add((EntityUid.Invalid, indices));
+            }
+        }
+
+        // Batch spawn entities
+        foreach (var (_, indices) in _chunkLoaderEntities)
+        {
+            if (TryGetEntity(indices, component, (gridUid, grid), out var entPrototype))
+            {
                 var ent = Spawn(entPrototype, _mapSystem.GridTileToLocal(gridUid, grid, indices));
 
                 if (_xformQuery.TryGetComponent(ent, out var xform) && !xform.Anchored)
@@ -132,11 +172,19 @@ public sealed partial class BiomeSystem
         var loadedDecals = new Dictionary<uint, Vector2i>();
         component.LoadedDecals.Add(chunk, loadedDecals);
 
-        for (var x = 0; x < ChunkSize; x++)
+        _chunkLoaderDecals.Clear();
+
+        var startX = chunk.X;
+        var startY = chunk.Y;
+        var endX = startX + ChunkSize;
+        var endY = startY + ChunkSize;
+
+        // Collect
+        for (var x = startX; x < endX; x++)
         {
-            for (var y = 0; y < ChunkSize; y++)
+            for (var y = startY; y < endY; y++)
             {
-                var indices = new Vector2i(x + chunk.X, y + chunk.Y);
+                var indices = new Vector2i(x, y);
 
                 if (modified.Contains(indices))
                     continue;
@@ -148,11 +196,18 @@ public sealed partial class BiomeSystem
 
                 foreach (var decal in decals)
                 {
-                    if (!_decals.TryAddDecal(decal.ID, new EntityCoordinates(gridUid, decal.Position), out var dec))
-                        continue;
-
-                    loadedDecals.Add(dec, indices);
+                    _chunkLoaderDecals.Add((decal.ID, new EntityCoordinates(gridUid, decal.Position)));
                 }
+            }
+        }
+
+        // Batch create
+        foreach (var (decalId, coords) in _chunkLoaderDecals)
+        {
+            if (_decals.TryAddDecal(decalId, coords, out var dec))
+            {
+                var tilePos = _mapSystem.LocalToTile(gridUid, grid, coords);
+                loadedDecals.Add(dec, tilePos);
             }
         }
     }
@@ -199,11 +254,28 @@ public sealed partial class BiomeSystem
         if (!component.LoadedDecals.TryGetValue(chunk, out var loadedDecals))
             return;
 
+        _chunkLoaderDecalsToDelete.Clear();
+
+        // Batch collect decals to delete
         foreach (var (dec, indices) in loadedDecals)
+        {
+            _chunkLoaderDecalsToDelete.Add(dec);
+        }
+
+        // Batch process decal removal
+        foreach (var dec in _chunkLoaderDecalsToDelete)
         {
             if (!_decals.RemoveDecal(gridUid, dec))
             {
-                modified.Add(indices);
+                // Find the indices for this decal to mark as modified
+                foreach (var (decalId, indices) in loadedDecals)
+                {
+                    if (decalId == dec)
+                    {
+                        modified.Add(indices);
+                        break;
+                    }
+                }
             }
         }
 
@@ -215,8 +287,10 @@ public sealed partial class BiomeSystem
         if (!component.LoadedEntities.TryGetValue(chunk, out var loadedEntities))
             return;
 
+        _chunkLoaderEntitiesToDelete.Clear();
         var xformQuery = GetEntityQuery<TransformComponent>();
 
+        // Batch validate entities and collect ones to delete
         foreach (var (ent, tile) in loadedEntities)
         {
             if (Deleted(ent) || !xformQuery.TryGetComponent(ent, out var xform))
@@ -239,6 +313,12 @@ public sealed partial class BiomeSystem
                 continue;
             }
 
+            _chunkLoaderEntitiesToDelete.Add(ent);
+        }
+
+        // Batch delete entities
+        foreach (var ent in _chunkLoaderEntitiesToDelete)
+        {
             Del(ent);
         }
 
@@ -247,11 +327,17 @@ public sealed partial class BiomeSystem
 
     private void UnloadTiles(BiomeComponent component, EntityUid gridUid, MapGridComponent grid, Vector2i chunk, int seed, HashSet<Vector2i> modified, List<(Vector2i, Tile)> tiles)
     {
-        for (var x = 0; x < ChunkSize; x++)
+        var startX = chunk.X;
+        var startY = chunk.Y;
+        var endX = startX + ChunkSize;
+        var endY = startY + ChunkSize;
+
+        // Batch collect tiles to unload
+        for (var x = startX; x < endX; x++)
         {
-            for (var y = 0; y < ChunkSize; y++)
+            for (var y = startY; y < endY; y++)
             {
-                var indices = new Vector2i(x + chunk.X, y + chunk.Y);
+                var indices = new Vector2i(x, y);
 
                 if (modified.Contains(indices))
                     continue;
@@ -275,8 +361,12 @@ public sealed partial class BiomeSystem
             }
         }
 
-        _mapSystem.SetTiles(gridUid, grid, tiles);
-        tiles.Clear();
+        // Single batched tile removal operation
+        if (tiles.Count > 0)
+        {
+            _mapSystem.SetTiles(gridUid, grid, tiles);
+            tiles.Clear();
+        }
     }
 
     /// <summary>
@@ -287,12 +377,15 @@ public sealed partial class BiomeSystem
         var active = _activeChunks[component];
         List<(Vector2i, Tile)>? tiles = null;
 
-        foreach (var chunk in component.LoadedChunks)
+        // Pre-allocate with better initial capacity
+        var expectedChunkSize = ChunkSize * ChunkSize;
+
+        foreach (var chunk in component.LoadedChunks.ToList()) // ToList to avoid modification during enumeration
         {
-            if (active.Contains(chunk) || !component.LoadedChunks.Remove(chunk))
+            if (active.Contains(chunk))
                 continue;
 
-            tiles ??= new List<(Vector2i, Tile)>(ChunkSize * ChunkSize);
+            tiles ??= new List<(Vector2i, Tile)>(expectedChunkSize);
             UnloadChunk(component, gridUid, grid, chunk, seed, tiles);
         }
     }
