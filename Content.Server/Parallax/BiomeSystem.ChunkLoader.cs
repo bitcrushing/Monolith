@@ -42,6 +42,29 @@ public sealed partial class BiomeSystem
         _chunkLoaderEntitiesToDelete.Capacity = expectedChunkSize / 4;
         _chunkLoaderDecalsToDelete.Capacity = expectedChunkSize / 8;
     }
+    private void ForEachTileInChunk(Vector2i chunk, HashSet<Vector2i> modified, Action<Vector2i> action)
+    {
+        var startX = chunk.X;
+        var startY = chunk.Y;
+        var endX = startX + ChunkSize;
+        var endY = startY + ChunkSize;
+
+        for (var x = startX; x < endX; x++)
+        {
+            for (var y = startY; y < endY; y++)
+            {
+                var indices = new Vector2i(x, y);
+                if (!modified.Contains(indices))
+                    action(indices);
+            }
+        }
+    }
+
+    private bool HasAnchoredEntity(EntityUid gridUid, MapGridComponent grid, Vector2i indices)
+    {
+        var anchored = _mapSystem.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
+        return anchored.MoveNext(out _);
+    }
 
     /// <summary>
     /// Loads a particular queued chunk for a biome.
@@ -74,32 +97,16 @@ public sealed partial class BiomeSystem
     {
         _chunkLoaderTiles.Clear();
 
-        var startX = chunk.X;
-        var startY = chunk.Y;
-        var endX = startX + ChunkSize;
-        var endY = startY + ChunkSize;
-
-        // Collect
-        for (var x = startX; x < endX; x++)
+        ForEachTileInChunk(chunk, modified, indices =>
         {
-            for (var y = startY; y < endY; y++)
+            if (_mapSystem.TryGetTileRef(gridUid, grid, indices, out var tileRef) && !tileRef.Tile.IsEmpty)
+                return;
+
+            if (TryGetBiomeTile(indices, component.Layers, seed, (gridUid, grid), out var biomeTile))
             {
-                var indices = new Vector2i(x, y);
-
-                if (modified.Contains(indices))
-                    continue;
-
-                if (_mapSystem.TryGetTileRef(gridUid, grid, indices, out var tileRef) && !tileRef.Tile.IsEmpty)
-                {
-                    continue;
-                }
-
-                if (TryGetBiomeTile(indices, component.Layers, seed, (gridUid, grid), out var biomeTile))
-                {
-                    _chunkLoaderTiles.Add((indices, biomeTile.Value));
-                }
+                _chunkLoaderTiles.Add((indices, biomeTile.Value));
             }
-        }
+        });
 
         if (_chunkLoaderTiles.Count > 0) // Don't need to call setTiles if there's nothing to load
         {
@@ -118,35 +125,11 @@ public sealed partial class BiomeSystem
         var loadedEntities = new Dictionary<EntityUid, Vector2i>();
         component.LoadedEntities.Add(chunk, loadedEntities);
 
-        _chunkLoaderEntities.Clear();
-
-        var startX = chunk.X;
-        var startY = chunk.Y;
-        var endX = startX + ChunkSize;
-        var endY = startY + ChunkSize;
-
-        // Collect
-        for (var x = startX; x < endX; x++)
+        ForEachTileInChunk(chunk, modified, indices =>
         {
-            for (var y = startY; y < endY; y++)
-            {
-                var indices = new Vector2i(x, y);
+            if (HasAnchoredEntity(gridUid, grid, indices))
+                return;
 
-                if (modified.Contains(indices))
-                    continue;
-
-                var anchored = _mapSystem.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
-
-                if (anchored.MoveNext(out _) || !TryGetEntity(indices, component, (gridUid, grid), out var entPrototype))
-                    continue;
-
-                _chunkLoaderEntities.Add((EntityUid.Invalid, indices));
-            }
-        }
-
-        // Batch spawn entities
-        foreach (var (_, indices) in _chunkLoaderEntities)
-        {
             if (TryGetEntity(indices, component, (gridUid, grid), out var entPrototype))
             {
                 var ent = Spawn(entPrototype, _mapSystem.GridTileToLocal(gridUid, grid, indices));
@@ -158,7 +141,7 @@ public sealed partial class BiomeSystem
 
                 loadedEntities.Add(ent, indices);
             }
-        }
+        });
     }
 
     private void LoadDecals(
@@ -174,32 +157,16 @@ public sealed partial class BiomeSystem
 
         _chunkLoaderDecals.Clear();
 
-        var startX = chunk.X;
-        var startY = chunk.Y;
-        var endX = startX + ChunkSize;
-        var endY = startY + ChunkSize;
-
-        // Collect
-        for (var x = startX; x < endX; x++)
+        ForEachTileInChunk(chunk, modified, indices =>
         {
-            for (var y = startY; y < endY; y++)
+            if (HasAnchoredEntity(gridUid, grid, indices) || !TryGetDecals(indices, component.Layers, seed, (gridUid, grid), out var decals))
+                return;
+
+            foreach (var decal in decals)
             {
-                var indices = new Vector2i(x, y);
-
-                if (modified.Contains(indices))
-                    continue;
-
-                var anchored = _mapSystem.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
-
-                if (anchored.MoveNext(out _) || !TryGetDecals(indices, component.Layers, seed, (gridUid, grid), out var decals))
-                    continue;
-
-                foreach (var decal in decals)
-                {
-                    _chunkLoaderDecals.Add((decal.ID, new EntityCoordinates(gridUid, decal.Position)));
-                }
+                _chunkLoaderDecals.Add((decal.ID, new EntityCoordinates(gridUid, decal.Position)));
             }
-        }
+        });
 
         // Batch create
         foreach (var (decalId, coords) in _chunkLoaderDecals)
@@ -327,39 +294,23 @@ public sealed partial class BiomeSystem
 
     private void UnloadTiles(BiomeComponent component, EntityUid gridUid, MapGridComponent grid, Vector2i chunk, int seed, HashSet<Vector2i> modified, List<(Vector2i, Tile)> tiles)
     {
-        var startX = chunk.X;
-        var startY = chunk.Y;
-        var endX = startX + ChunkSize;
-        var endY = startY + ChunkSize;
-
-        // Batch collect tiles to unload
-        for (var x = startX; x < endX; x++)
+        ForEachTileInChunk(chunk, modified, indices =>
         {
-            for (var y = startY; y < endY; y++)
+            if (HasAnchoredEntity(gridUid, grid, indices))
             {
-                var indices = new Vector2i(x, y);
-
-                if (modified.Contains(indices))
-                    continue;
-
-                var anchored = _mapSystem.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
-
-                if (anchored.MoveNext(out _))
-                {
-                    modified.Add(indices);
-                    continue;
-                }
-
-                if (!TryGetBiomeTile(indices, component.Layers, seed, null, out var biomeTile) ||
-                    _mapSystem.TryGetTileRef(gridUid, grid, indices, out var tileRef) && tileRef.Tile != biomeTile.Value)
-                {
-                    modified.Add(indices);
-                    continue;
-                }
-
-                tiles.Add((indices, Tile.Empty));
+                modified.Add(indices);
+                return;
             }
-        }
+
+            if (!TryGetBiomeTile(indices, component.Layers, seed, null, out var biomeTile) ||
+                _mapSystem.TryGetTileRef(gridUid, grid, indices, out var tileRef) && tileRef.Tile != biomeTile.Value)
+            {
+                modified.Add(indices);
+                return;
+            }
+
+            tiles.Add((indices, Tile.Empty));
+        });
 
         // Single batched tile removal operation
         if (tiles.Count > 0)
@@ -376,10 +327,7 @@ public sealed partial class BiomeSystem
     {
         var active = _activeChunks[component];
         List<(Vector2i, Tile)>? tiles = null;
-
-        // Pre-allocate with better initial capacity
         var expectedChunkSize = ChunkSize * ChunkSize;
-
         foreach (var chunk in component.LoadedChunks.ToList()) // ToList to avoid modification during enumeration
         {
             if (active.Contains(chunk))
