@@ -245,7 +245,6 @@ public sealed partial class BiomeSystem
                 }
             }
         }
-
         component.LoadedDecals.Remove(chunk);
     }
 
@@ -312,7 +311,7 @@ public sealed partial class BiomeSystem
             tiles.Add((indices, Tile.Empty));
         });
 
-        // Single batched tile removal operation
+        // Batch tile removal
         if (tiles.Count > 0)
         {
             _mapSystem.SetTiles(gridUid, grid, tiles);
@@ -326,15 +325,17 @@ public sealed partial class BiomeSystem
     private void UnloadChunks(BiomeComponent component, EntityUid gridUid, MapGridComponent grid, int seed)
     {
         var active = _activeChunks[component];
-        List<(Vector2i, Tile)>? tiles = null;
-        var expectedChunkSize = ChunkSize * ChunkSize;
-        foreach (var chunk in component.LoadedChunks.ToList()) // ToList to avoid modification during enumeration
+
+        var loadedChunksList = component.LoadedChunks.ToList();
+        for (int i = loadedChunksList.Count - 1; i >= 0; i--)
         {
+            var chunk = loadedChunksList[i];
             if (active.Contains(chunk))
                 continue;
 
-            tiles ??= new List<(Vector2i, Tile)>(expectedChunkSize);
+            var tiles = new List<(Vector2i, Tile)>(ChunkSize * ChunkSize);
             UnloadChunk(component, gridUid, grid, chunk, seed, tiles);
+            return;
         }
     }
 }
