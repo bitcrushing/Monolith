@@ -1,8 +1,0 @@
-public sealed class HitscanDiffractionTest
-{
-    [Test]
-    public async Task HitscanDiffractionTest()
-    {
-
-    }
-}
