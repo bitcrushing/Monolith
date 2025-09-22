@@ -13,6 +13,7 @@ public sealed class HitscanDiffractSystem : EntitySystem
 {
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     public override void Initialize()
     {
@@ -81,14 +82,22 @@ public sealed class HitscanDiffractSystem : EntitySystem
         HitscanTraceEvent originalArgs, EntityCoordinates fromCoordinates, Vector2 direction)
     {
         // Which hitscan prototype to spawn?
-        var originalPrototypeId = MetaData(originalHitscan).EntityPrototype?.ID;
         EntProtoId? prototypeToSpawn = originalHitscan.Comp.DiffractedBeamPrototype;
 
-        // Safeguard against diffract beams spawning more of themselves
-        if (prototypeToSpawn == null || originalPrototypeId != null && prototypeToSpawn.Value == originalPrototypeId)
+        // Safeguard against diffract beam hell (stack overflow)
+        if (prototypeToSpawn != null)
+        {
+            var prototype = _prototypeManager.Index<EntityPrototype>(prototypeToSpawn.Value);
+            if (prototype.Components.ContainsKey("HitscanDiffract"))
+            {
+                prototypeToSpawn = new EntProtoId("RedLaser");
+            }
+        }
+        else
         {
             prototypeToSpawn = new EntProtoId("RedLaser");
         }
+
         // Spawn entity
         var newHitscan = Spawn(prototypeToSpawn.Value, fromCoordinates);
 
