@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 bitcrushing
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Tests.Interaction;
