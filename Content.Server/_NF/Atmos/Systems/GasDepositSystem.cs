@@ -284,7 +284,7 @@ public sealed class GasDepositSystem : SharedGasDepositSystem
             salePoint.Comp.GasStorage.Clear();
         }
 
-        var amount = _atmosphere.GetPrice(mixture);
+        var amount = _atmosphere.GetPriceNoPurity(mixture); // Mono - No purity penalty
         if (TryComp<MarketModifierComponent>(ent, out var priceMod))
             amount *= priceMod.Mod;
 
@@ -324,7 +324,7 @@ public sealed class GasDepositSystem : SharedGasDepositSystem
             _atmosphere.Merge(mixture, salePoint.Comp.GasStorage);
         }
 
-        value = _atmosphere.GetPrice(mixture);
+        value = _atmosphere.GetPriceNoPurity(mixture); // Mono - No purity penalty
     }
 
     private List<Entity<GasSalePointComponent>> GetNearbySalePoints(EntityUid consoleUid, EntityUid gridUid)

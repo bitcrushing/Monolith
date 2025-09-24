@@ -28,11 +28,26 @@ public partial class AtmosphereSystem
 
         // Pay more for gas canisters that are more pure
         float purity = 1;
-        if (totalMoles > 0) {
+        if (totalMoles > 0)
+        {
             purity = maxComponent / totalMoles;
         }
 
         return basePrice * purity;
+    }
+
+    /// <summary>
+    /// Mono - Gets the price of an air mixture without purity penalty.
+    /// </summary>
+    public double GetPriceNoPurity(GasMixture mixture)
+    {
+        float basePrice = 0; // moles of gas * price/mole
+        for (var i = 0; i < Atmospherics.TotalNumberOfGases; i++)
+        {
+            basePrice += mixture.Moles[i] * GetGas(i).PricePerMole;
+        }
+
+        return basePrice;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
