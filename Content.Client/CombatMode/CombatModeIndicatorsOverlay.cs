@@ -1,14 +1,6 @@
-// SPDX-FileCopyrightText: 2023 Artjom
-// SPDX-FileCopyrightText: 2023 TemporalOroboros
-// SPDX-FileCopyrightText: 2023 metalgearsloth
-// SPDX-FileCopyrightText: 2024 I.K
-// SPDX-FileCopyrightText: 2025 starch
-//
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 using System.Numerics;
 using Content.Client.Hands.Systems;
-using Content.Shared._RMC14.CombatMode;
+using Content.Shared._RMC14.CombatMode; // Mono
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -35,8 +27,8 @@ public sealed class CombatModeIndicatorsOverlay : Overlay
     private readonly IEyeManager _eye;
     private readonly CombatModeSystem _combat;
     private readonly HandsSystem _hands = default!;
-    private readonly RMCCombatModeSystem _rmcCombatMode;
-    private readonly SpriteSystem _sprite;
+    private readonly RMCCombatModeSystem _rmcCombatMode; // Mono
+    private readonly SpriteSystem _sprite; // Mono
 
     private readonly Texture _gunSight;
     private readonly Texture _gunBoltSight;
@@ -65,8 +57,8 @@ public sealed class CombatModeIndicatorsOverlay : Overlay
         _meleeSight = spriteSys.Frame0(new SpriteSpecifier.Rsi(new ResPath("/Textures/Interface/Misc/crosshair_pointers.rsi"),
              "melee_sight"));
 
-        _rmcCombatMode = entMan.System<RMCCombatModeSystem>();
-        _sprite = entMan.System<SpriteSystem>();
+        _rmcCombatMode = entMan.System<RMCCombatModeSystem>(); // Mono
+        _sprite = entMan.System<SpriteSystem>(); // Mono
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
@@ -96,6 +88,8 @@ public sealed class CombatModeIndicatorsOverlay : Overlay
         var limitedScale = uiScale > 1.25f ? 1.25f : uiScale;
 
         var sight = isHandGunItem ? (isGunBolted ? _gunSight : _gunBoltSight) : _meleeSight;
+
+        // Mono Start
         if (handEntity != null && _rmcCombatMode.GetCrosshair(handEntity.Value) is { } crosshair)
         {
             sight = _sprite.Frame0(crosshair);
@@ -104,6 +98,8 @@ public sealed class CombatModeIndicatorsOverlay : Overlay
             args.ScreenHandle.DrawTextureRect(sight, rect);
             return;
         }
+        // Mono End
+
         DrawSight(sight, args.ScreenHandle, mousePos, limitedScale * Scale);
     }
 

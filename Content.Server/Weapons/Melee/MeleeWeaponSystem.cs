@@ -1,5 +1,4 @@
 using Content.Server.Chat.Systems;
-using Content.Server.CombatMode.Disarm;
 using Content.Server.Movement.Systems;
 using Content.Shared.Actions.Events;
 using Content.Shared.Administration.Components;
@@ -148,8 +147,8 @@ public sealed class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
         AdminLogger.Add(LogType.DisarmedAction, $"{ToPrettyString(user):user} used disarm on {ToPrettyString(target):target}");
 
-        var eventArgs = new DisarmedEvent { Target = target, Source = user, PushProbability = 1 - chance };
-        RaiseLocalEvent(target, eventArgs);
+        var eventArgs = new DisarmedEvent(target, user, 1 - chance);
+        RaiseLocalEvent(target, ref eventArgs);
 
         if (!eventArgs.Handled)
         {

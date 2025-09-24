@@ -24,7 +24,7 @@ public abstract class SharedMouthStorageSystem : EntitySystem
 
         SubscribeLocalEvent<MouthStorageComponent, MapInitEvent>(OnMouthStorageInit);
         SubscribeLocalEvent<MouthStorageComponent, DownedEvent>(DropAllContents);
-        SubscribeLocalEvent<MouthStorageComponent, DisarmedEvent>(DropAllContents);
+        SubscribeLocalEvent<MouthStorageComponent, DisarmedEvent>(OnDisarmed); // Mono
         SubscribeLocalEvent<MouthStorageComponent, DamageChangedEvent>(OnDamageModified);
         SubscribeLocalEvent<MouthStorageComponent, ExaminedEvent>(OnExamined);
     }
@@ -61,6 +61,16 @@ public abstract class SharedMouthStorageSystem : EntitySystem
 
         _dumpableSystem.DumpContents(component.MouthId.Value, uid, uid);
     }
+
+    // Mono Start
+    private void OnDisarmed(EntityUid uid, MouthStorageComponent component, ref DisarmedEvent args)
+    {
+        if (component.MouthId == null)
+            return;
+
+        _dumpableSystem.DumpContents(component.MouthId.Value, uid, uid);
+    }
+    // Mono End
 
     private void OnDamageModified(EntityUid uid, MouthStorageComponent component, DamageChangedEvent args)
     {
