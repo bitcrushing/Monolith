@@ -10,7 +10,7 @@ using Robust.Client.UserInterface;
 using Robust.Shared.Enums;
 using Robust.Shared.Graphics;
 using Robust.Shared.Utility;
-using Color = Robust.Shared.Maths.Color;
+using Color = Robust.Shared.Maths.Color; // Mono
 
 namespace Content.Client.CombatMode;
 
